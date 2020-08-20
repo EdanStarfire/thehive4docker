@@ -1,0 +1,23 @@
+version: "3.4"
+services:
+  cassandra:
+    image: cassandra:3.11
+    environment:
+      - CASSANDRA_CLUSTER_NAME=thp
+      #- JVM_EXTRA_OPTS=-Dcassandra.config=file:///tmp/cassandra.yaml
+    volumes:
+      - ./cassandra/cassandra.yaml:/etc/cassandra/cassandra.yaml
+    ports:
+      - 0.0.0.0:9042:9042
+      - 0.0.0.0:7000:7000
+    container_name: thehivedb
+  thehive4:
+    image: thehive4:4.0
+    volumes:
+      - ./thehive4/application.conf:/etc/thehive/application.conf
+    depends_on:
+      - cassandra
+    ports:
+      - "0.0.0.0:9000:9000"
+    container_name: thehive4
+    restart: on-failure
